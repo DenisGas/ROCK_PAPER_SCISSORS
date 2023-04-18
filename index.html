@@ -5,13 +5,36 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/main.css">
   <title>ROCK PAPER SCISSORS</title>
 </head>
 
 <body>
 
+  <header>
+    <h1>Score</h1>
+  </header>
 
-  <script src="./js/main.js"></script>
+  <main class="content">
+    <section class="scores">
+      <p>Player: <span id="playerWinScore">0</span></p>
+      <p>Draw: <span id="drawScore">0</span></p>
+      <p>PC: <span id="pcWinScore">0</span></p>
+    </section>
+
+    <div id="answerDiv">
+      <p id="answer">click to any btn</p>
+    </div>
+
+    <section class="buttons">
+      <button data-value="rock" class="button">Rock</button>
+      <button data-value="paper" class="button">Paper</button>
+      <button data-value="scissors" class="button">Scissors</button>
+    </section>
+
+  </main>
+
+  <script defer src="./js/main.js"></script>
 </body>
 
 </html>
