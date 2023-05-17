@@ -6,4 +6,4 @@ Educational project game.
 
 ## Preview
 
-![preview img](./preview/preview.png)
+<img src = "./preview/preview.png " width=300px>
