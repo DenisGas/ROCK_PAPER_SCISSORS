@@ -1,80 +1,79 @@
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
+const buttons = document.querySelectorAll(".button");
+const gameboard = document.getElementById("gameboard");
+const pcWinScore = document.getElementById("pcWinScore");
+const playerWinScore = document.getElementById("playerWinScore");
+const pсSign = document.getElementById("pсSign");
+const playerSign = document.getElementById("playerSign");
+const restartBtn = document.getElementById("restart-btn");
+const whoWinGame = document.getElementById("who-win-game");
+const modal = document.getElementById("win-game-messedge");
+const roundResultText = document.getElementById("gameboard-score-message-text");
+
+const FIGURE_ARRAY = ["rock", "paper", "scissors"];
+const SIGN_ARRAY = ["✊", "✋", "✌"];
+const WIN_ARRAY = ["👑YOU WIN👑", "💔YOU LOSE💔"];
+const gameScore = { plrWns: 0, pcWns: 0 };
+
+for (let i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener("click", buttonClickHandler);
+}
+
+restartBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+  game();
+});
+
+function signChoice(elem, num) {
+  elem.textContent = SIGN_ARRAY[num];
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max - 1);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function showModal(gameResult) {
+  gameboard.classList.add("opacity0");
+  setTimeout(() => {
+    gameboard.style.display = "none";
+    modal.style.display = "block";
+  }, 200);
+  whoWinGame.textContent = gameResult;
 }
 
 function computerPlay(arr, num) {
+  signChoice(pсSign, num);
   return arr[num];
 }
 
-function createBtn(FIGURE_ARRAY) {
-  const buttonsSection = document.querySelector(".buttons");
-  for (i = 0; i < FIGURE_ARRAY.length; i++) {
-    const newBtn = document.createElement("button");
-    newBtn.classList.add("button");
-    newBtn.textContent = FIGURE_ARRAY[i];
-    newBtn.dataset.value = FIGURE_ARRAY[i];
-    buttonsSection.appendChild(newBtn);
-  }
-}
-
-function btnAddEvent(nextRound, FIGURE_ARRAY, gameScore) {
-  const buttons = document.querySelectorAll(".button");
-  const clickHandler = (event) => btnClick(event, FIGURE_ARRAY, gameScore);
-  if (nextRound === true) {
-    buttons.forEach((btn) => {
-      btn.remove();
-    });
-    createBtn(FIGURE_ARRAY);
-    game();
-  } else {
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", clickHandler);
-    });
-  }
-}
-
-function btnClick(e, FIGURE_ARRAY, gameScore) {
+function buttonClickHandler(e) {
   let playerSelection = e.target.dataset.value;
+
+  signChoice(playerSign, FIGURE_ARRAY.indexOf(playerSelection));
   let computerSelection = computerPlay(
     FIGURE_ARRAY,
-    getRandomInt(FIGURE_ARRAY.length)
+    getRandomInt(0, FIGURE_ARRAY.length)
   );
   let roundResult = playRound(playerSelection, computerSelection, gameScore);
   updateScore(gameScore, roundResult);
 }
 
-function updateScore(scoreData, roundResult, removeFunc) {
-  const answer = document.getElementById("answer");
-  const playerWinScore = document.getElementById("playerWinScore");
-  const drawScore = document.getElementById("drawScore");
-  const pcWinScore = document.getElementById("pcWinScore");
-
-  answer.parentNode.style.background = "#c9a39e";
-  answer.textContent = roundResult;
-
+function updateScore(scoreData, roundResult) {
+  roundResultText.textContent = roundResult;
   playerWinScore.textContent = scoreData.plrWns;
   pcWinScore.textContent = scoreData.pcWns;
-  drawScore.textContent =
-    scoreData.round - (scoreData.plrWns + scoreData.pcWns);
-
-  if (scoreData.plrWns === 5 || scoreData.pcWns === 5) {
-    answer.parentNode.style.background = "green";
-    if (scoreData.plrWns > scoreData.pcWns) {
-      answer.textContent = "Player win";
-    } else {
-      answer.parentNode.style.background = "#ff543e";
-      answer.textContent = "PC win";
-    }
-
-    return game(true);
+  if (scoreData.pcWns === 5) {
+    return showModal(WIN_ARRAY[1]);
+  }
+  if (scoreData.plrWns === 5) {
+    return showModal(WIN_ARRAY[0]);
   }
 }
 
 function playRound(playerSelection, computerSelection, scoreData) {
-  scoreData.round += 1;
-
   if (playerSelection === computerSelection) {
-    return "Draw";
+    return "It's a tie!";
   } else if (playerSelection === "paper" && computerSelection === "rock") {
     scoreData.plrWns += 1;
     return "Player Win, Paper wraps Rock";
@@ -97,10 +96,14 @@ function playRound(playerSelection, computerSelection, scoreData) {
   return "ERROR";
 }
 
-function game(nextRound = false) {
-  const FIGURE_ARRAY = ["rock", "paper", "scissors"];
-  const gameScore = { plrWns: 0, pcWns: 0, round: 0 };
-  btnAddEvent(nextRound, FIGURE_ARRAY, gameScore);
+function game() {
+  gameboard.classList.remove("opacity0");
+  gameboard.style.display = "flex";
+  roundResultText.textContent = "Start the round";
+  playerWinScore.textContent = "0";
+  pcWinScore.textContent = "0";
+  gameScore.pcWns = 0;
+  gameScore.plrWns = 0;
 }
 
 game();
